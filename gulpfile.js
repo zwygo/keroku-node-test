@@ -94,7 +94,12 @@ gulp.task('watch', function() {
   );
 });
 
-gulp.task('default',
+gulp.task('dev',
   ['scripts', 'views', 'styles', 'vendor', 'lint', 'watch', 'express'],
+  function() {}
+);
+
+gulp.task('default',
+  ['scripts', 'views', 'styles', 'vendor', 'express'],
   function() {}
 );
