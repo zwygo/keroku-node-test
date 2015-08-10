@@ -74,7 +74,7 @@ app.all('/*', function(req, res) {
   res.sendFile('index.html', { root: 'public' });
 });
 gulp.task('express', function() {
-  app.listen(4000);
+  app.listen(process.env.PORT || 4000);
   livereload.listen();
   console.log("Listening on port 4000");
 });
