@@ -1,8 +1,8 @@
 {
-  "name": "giftly",
+  "name": "myapp",
   "version": "1.0.0",
   "authors": [],
-  "description": "Giftly",
+  "description": "My App",
   "license": "",
   "private": true,
   "ignore": [

@@ -1,4 +1,4 @@
-giftly.controller('splash', function(
+myapp.controller('splash', function(
   $scope
 ) {
   $scope.splashText = "This is the splash page";

@@ -1,4 +1,4 @@
-var giftly = angular.module('giftly', [
+var myapp = angular.module('myapp', [
   'ui.router'
 ]).config(function(
   $stateProvider,

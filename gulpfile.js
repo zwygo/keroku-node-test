@@ -10,18 +10,15 @@ var gulp = require('gulp'),
   filter = require('gulp-filter'),
   mainBowerFiles = require('main-bower-files');
 
-var src = {
-  styles: './app/styles/**/*.scss'
-};
+// set the environment
+var env = process.env.NODE_ENV || 'development';
 
-var dest = {
-  styles: './public/styles/'
-};
-
+// remove the public folder
 gulp.task('clean', function() {
   del('public/**');
 });
 
+// js linter
 gulp.task('lint', function() {
   return gulp.src('./app/scripts/*.js')
     .pipe(jshint())
@@ -43,6 +40,7 @@ gulp.task('views', function() {
   .pipe(livereload());
 });
 
+// put all js files into one app.js and put into public folder
 gulp.task('scripts', function() {
   return gulp.src('./app/scripts/**/*.js')
     .pipe(concat('app.js'))
@@ -50,6 +48,7 @@ gulp.task('scripts', function() {
     .pipe(livereload());
 });
 
+// compile all scss files into one and put into public folder
 gulp.task('styles', function() {
   return gulp.src('./app/styles/**/*.scss')
     .pipe(sass({
@@ -61,6 +60,7 @@ gulp.task('styles', function() {
     .pipe(livereload());
 });
 
+// third pary js files
 gulp.task('vendor', function() {
   return gulp.src(mainBowerFiles())
     .pipe(filter('**/*.js'))
@@ -68,17 +68,27 @@ gulp.task('vendor', function() {
     .pipe(gulp.dest('./public/js'));
 });
 
+// create an express app
 var app = express();
+// look for static files in the public directory
 app.use(express.static('./public'));
+// set the view engine to be ejs, look for views in '/'
+app.set('views', __dirname + '/');
+app.set('view engine', 'ejs');
+// route all requests to index.ejs, where angular takes over
 app.all('/*', function(req, res) {
-  res.sendFile('index.html', { root: 'public' });
+  res.locals.env = env;
+  res.render('index');
 });
+// start the express server
 gulp.task('express', function() {
   app.listen(process.env.PORT || 4000);
   livereload.listen();
   console.log("Listening on port 4000");
 });
 
+// when scss, js, or html files change, run the appropriate task to rebuild and
+// restart the app
 gulp.task('watch', function() {
   gulp.watch(
     ['./app/styles/*.scss', './app/styles/**/*.scss'],
@@ -94,12 +104,8 @@ gulp.task('watch', function() {
   );
 });
 
-gulp.task('dev',
-  ['scripts', 'views', 'styles', 'vendor', 'lint', 'watch', 'express'],
-  function() {}
-);
-
+// watch and auto reload for updated files
 gulp.task('default',
-  ['scripts', 'views', 'styles', 'vendor', 'express'],
+  ['scripts', 'views', 'styles', 'vendor', 'lint', 'watch', 'express'],
   function() {}
 );
